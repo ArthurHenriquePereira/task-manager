@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import { collection, addDoc, query, where, getDocs, updateDoc, deleteDoc, doc, onSnapshot, orderBy } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, updateDoc, deleteDoc, doc, onSnapshot, orderBy, getDoc } from 'firebase/firestore';
 import './Home.css';
 
 const Home = () => {
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState([]);
+  const [subtasks, setSubtasks] = useState([{ text: '', completed: false }]);
   const [loading, setLoading] = useState(false);
   const user = auth.currentUser;
   const navigate = useNavigate();
@@ -49,18 +50,42 @@ const Home = () => {
         task,
         completed: false,
         uid: user.uid,
+        subtasks: subtasks.filter(subtask => subtask.text.trim() !== ''),
         createdAt: new Date(),
       });
       setTask('');
+      setSubtasks([{ text: '', completed: false }]);
     } catch (error) {
       console.error('Erro ao adicionar tarefa: ', error);
     }
   };
 
+  const handleAddSubtaskInput = () => {
+    setSubtasks([...subtasks, { text: '', completed: false }]);
+  };
+
+  const handleSubtaskChange = (index, value) => {
+    const updatedSubtasks = [...subtasks];
+    updatedSubtasks[index].text = value;
+    setSubtasks(updatedSubtasks);
+  };
+
   const handleCompleteTask = async (id, completed) => {
     try {
       const taskRef = doc(db, 'tasks', id);
-      await updateDoc(taskRef, { completed: !completed });
+      const taskSnapshot = await getDoc(taskRef);
+      const taskData = taskSnapshot.data();
+
+      // Atualiza o status da tarefa principal e de todas as subtarefas
+      const updatedSubtasks = taskData.subtasks.map(subtask => ({
+        ...subtask,
+        completed: !completed,
+      }));
+
+      await updateDoc(taskRef, {
+        completed: !completed,
+        subtasks: updatedSubtasks
+      });
     } catch (error) {
       console.error('Erro ao atualizar tarefa: ', error);
     }
@@ -72,6 +97,32 @@ const Home = () => {
       await deleteDoc(taskRef);
     } catch (error) {
       console.error('Erro ao excluir tarefa: ', error);
+    }
+  };
+
+  const handleCompleteSubtask = async (taskId, subtaskIndex) => {
+    try {
+      const taskRef = doc(db, 'tasks', taskId);
+      const taskSnapshot = await getDoc(taskRef);
+      const taskData = taskSnapshot.data();
+
+      // Alterna o estado da subtarefa específica
+      const updatedSubtasks = taskData.subtasks.map((subtask, index) => {
+        if (index === subtaskIndex) {
+          return { ...subtask, completed: !subtask.completed };
+        }
+        return subtask;
+      });
+
+      // Verifica se todas as subtarefas estão concluídas
+      const allSubtasksCompleted = updatedSubtasks.every(subtask => subtask.completed);
+
+      await updateDoc(taskRef, {
+        completed: allSubtasksCompleted, // Atualiza a tarefa principal com base nas subtarefas
+        subtasks: updatedSubtasks
+      });
+    } catch (error) {
+      console.error('Erro ao atualizar subtarefa: ', error);
     }
   };
 
@@ -93,7 +144,20 @@ const Home = () => {
           onChange={(e) => setTask(e.target.value)}
           placeholder="Digite uma nova tarefa"
         />
-        <button type="submit">Adicionar Tarefa</button>
+
+        {subtasks.map((subtask, index) => (
+          <div key={index}>
+            <input
+              type="text"
+              value={subtask.text}
+              onChange={(e) => handleSubtaskChange(index, e.target.value)}
+              placeholder={`Digite a subtarefa ${index + 1}`}
+            />
+          </div>
+        ))}
+
+        <button type="button" onClick={handleAddSubtaskInput}>+</button>
+        <button type="submit">Adicionar Tarefa e Subtarefas</button>
       </form>
 
       {loading ? (
@@ -115,6 +179,23 @@ const Home = () => {
                 </button>
                 <button onClick={() => handleDeleteTask(task.id)}>Excluir</button>
               </div>
+
+              <ul>
+                {task.subtasks?.map((subtask, index) => (
+                  <li key={index}>
+                    <span
+                      style={{
+                        textDecoration: subtask.completed ? 'line-through' : 'none',
+                      }}
+                    >
+                      {subtask.text}
+                    </span>
+                    <button onClick={() => handleCompleteSubtask(task.id, index)}>
+                      {subtask.completed ? 'Desmarcar' : 'Concluir'}
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </li>
           ))}
         </ul>
