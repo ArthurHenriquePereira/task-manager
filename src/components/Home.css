@@ -1,88 +1,156 @@
+/* Estilos principais (computador) */
 .container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    text-align: center;
-    background-color: #f7f7f7;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+p {
+  color: #666;
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Campo de input */
+input {
+  width: 80%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+
+/* Lista de tarefas */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background-color: #fff;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li span {
+  font-size: 1.1rem;
+  color: #333;
+}
+
+li button {
+  padding: 5px 10px;
+}
+
+li button:first-of-type {
+  background-color: #28a745;
+}
+
+li button:first-of-type:hover {
+  background-color: #218838;
+}
+
+li button:last-of-type {
+  background-color: #dc3545;
+}
+
+li button:last-of-type:hover {
+  background-color: #c82333;
+}
+
+/* Subtarefas */
+.subtasks {
+  margin-top: 10px;
+  padding-left: 20px;
+  border-left: 2px solid #ddd;
+}
+
+.subtasks li {
+  background-color: #f9f9f9;
+  margin: 5px 0;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.subtasks li span {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Ajustes de layout para telas menores (celular) */
+@media (max-width: 600px) {
+  .container {
+      padding: 15px;
   }
-  
+
   h2 {
-    color: #333;
-    font-size: 2rem;
-    margin-bottom: 20px;
+      font-size: 1.5rem;
   }
-  
-  p {
-    color: #666;
-    font-size: 1rem;
-    margin-bottom: 10px;
-  }
-  
-  button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    margin: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  input {
-    width: 80%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
-    font-size: 1rem;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
+
+  /* Adapta o layout das tarefas e subtarefas para ocupar toda a largura */
   li {
-    background-color: #fff;
-    margin: 10px 0;
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+      padding: 10px;
+      flex-direction: column;
+      align-items: flex-start;
   }
-  
+
   li span {
-    font-size: 1.1rem;
-    color: #333;
+      font-size: 1rem;
+      margin-bottom: 10px;
   }
-  
-  li button {
-    padding: 5px 10px;
+
+  .subtasks {
+      padding-left: 10px;
+      border-left: none;
   }
-  
-  li button:first-of-type {
-    background-color: #28a745;
+
+  .subtasks li {
+      padding: 8px;
+      flex-direction: column;
+      align-items: flex-start;
   }
-  
-  li button:first-of-type:hover {
-    background-color: #218838;
+
+  .subtasks li span {
+      font-size: 0.9rem;
+      margin-bottom: 5px;
   }
-  
-  li button:last-of-type {
-    background-color: #dc3545;
+
+  button {
+      font-size: 0.9rem;
+      padding: 8px 12px;
   }
-  
-  li button:last-of-type:hover {
-    background-color: #c82333;
-  }
-  
+}
