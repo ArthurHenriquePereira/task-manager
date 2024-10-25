@@ -36,6 +36,8 @@ const SignUp = () => {
       
       if (error.code === 'auth/email-already-in-use') {
         setError('Já existe uma conta cadastrada com este e-mail.');
+      } else if (error.code === 'auth/unauthorized-domain') {
+        setError('Primeiro faça login em https://github.com/ para continuar.');
       } else {
         setError(error.message);
       }
