@@ -185,7 +185,7 @@ const Home = () => {
               </span>
               <div>
                 <button onClick={() => handleCompleteTask(task.id, task.completed)}>
-                  {task.completed ? 'Cancelar' : 'Concluir'}
+                  {task.completed ? 'Voltar' : 'Concluir'}
                 </button>
                 <button onClick={() => handleDeleteTask(task.id)}>Excluir</button>
               </div>
@@ -201,7 +201,7 @@ const Home = () => {
                       {subtask.text}
                     </span>
                     <button onClick={() => handleCompleteSubtask(task.id, index)}>
-                      {subtask.completed ? 'Cancelar' : 'Concluir'}
+                      {subtask.completed ? 'Voltar' : 'Concluir'}
                     </button>
                   </li>
                 ))}
