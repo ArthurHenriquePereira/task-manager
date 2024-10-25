@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
-import { collection, addDoc, query, where, getDocs, updateDoc, deleteDoc, doc, onSnapshot, orderBy, getDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, updateDoc, deleteDoc, doc, onSnapshot, orderBy, getDoc } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 import './Home.css';
 
 const Home = () => {
@@ -9,14 +10,23 @@ const Home = () => {
   const [tasks, setTasks] = useState([]);
   const [subtasks, setSubtasks] = useState([{ text: '', completed: false }]);
   const [loading, setLoading] = useState(false);
-  const user = auth.currentUser;
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        navigate('/login');
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
+
+  useEffect(() => {
+    if (!user) return;
 
     setLoading(true);
 
@@ -26,7 +36,7 @@ const Home = () => {
       orderBy('createdAt', 'desc')
     );
 
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    const unsubscribeTasks = onSnapshot(q, (querySnapshot) => {
       const tasksArray = [];
       querySnapshot.forEach((doc) => {
         tasksArray.push({ id: doc.id, ...doc.data() });
@@ -35,8 +45,8 @@ const Home = () => {
       setLoading(false);
     });
 
-    return () => unsubscribe();
-  }, [user, navigate]);
+    return () => unsubscribeTasks();
+  }, [user]);
 
   const handleAddTask = async (e) => {
     e.preventDefault();
