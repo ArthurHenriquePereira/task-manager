@@ -1,9 +1,8 @@
-// src/components/Login.js
 import React, { useState } from 'react';
 import { auth } from '../firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import './SignUp_Login.css'; // Caso tenha um arquivo de estilo separado
+import './SignUp_Login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -42,7 +41,9 @@ const Login = () => {
           placeholder="Senha"
           required
         />
-        <button type="submit">Entrar</button>
+        <div>
+          <button type="submit">Entrar</button>
+        </div>
       </form>
       <p>
         Não possui uma conta?{' '}

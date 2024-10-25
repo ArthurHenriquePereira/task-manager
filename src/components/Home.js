@@ -1,9 +1,8 @@
-// src/components/Home.js
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { collection, addDoc, query, where, getDocs, updateDoc, deleteDoc, doc, onSnapshot, orderBy } from 'firebase/firestore';
-import './Home.css'; // Importando o arquivo CSS
+import './Home.css';
 
 const Home = () => {
   const [task, setTask] = useState('');
